@@ -1,0 +1,109 @@
+name: 'SSH key multi-line'
+description: 'Converts multi-line SSH Key into single line.'
+inputs:
+  ENVIRONMENT:  # id of input
+    description: 'The environment to be build.'
+    required: false
+  SSH-KEY-DEV:  # id of input
+    description: 'SSH Key to transform from multi to single line.'
+    required: true
+  SSH-KEY-TEST:  # id of input
+    description: 'SSH Key to transform from multi to single line.'
+    required: true
+  SSH-KEY-PROD:  # id of input
+    description: 'SSH Key to transform from multi to single line.'
+    required: true
+  BASTION-IP-DEV:  # id of input
+    description: 'The IP of the DEV Bastion host'
+    required: false
+  BASTION-IP-TEST:  # id of input
+    description: 'The IP of the TEST Bastion host'
+    required: false
+  BASTION-IP-PROD:  # id of input
+    description: 'The IP of the PROD Bastion host'
+    required: false
+  SG-ID-DEV:  # id of input
+    description: 'The ID of the DEV Bastion host SSH security group'
+    required: false
+  SG-ID-TEST:  # id of input
+    description: 'The ID of the TEST Bastion host SSH security group'
+    required: false
+  SG-ID-PROD:  # id of input
+    description: 'The ID of the PROD Bastion host SSH security group'
+    required: false
+  REGION-DEV:  # id of input
+    description: 'The region for the development resources'
+    required: false
+  REGION-TEST:  # id of input
+    description: 'The region for the testing resources'
+    required: false
+  REGION-PROD:  # id of input
+    description: 'The region for the production resources'
+    required: false
+outputs:
+  SSH-KEY-SINGLE:
+    description: "Single line SSH key"
+    value: ${{ steps.environment_check.outputs.KEY }}
+  ENV_BRANCH:
+    description: "The branch tag to be applied"
+    value: ${{ steps.environment_check.outputs.ENV_BRANCH }}
+  ENV_REGION:
+    description: "The region to create the resources in"
+    value: ${{ steps.environment_check.outputs.ENV_REGION }}
+  BASTION_IP:
+    description: "The IP of the Bastion host"
+    value: ${{ steps.environment_check.outputs.BASTION_IP }}
+  SG_ID:
+    description: "The ID of the Bastion host SSH security group"
+    value: ${{ steps.environment_check.outputs.SG_ID }}
+runs:
+  using: "composite"
+  steps:
+    - name: Check if ENVIRONMENT variable is present
+      id: env_check
+      run: |
+        if [ "${{ inputs.ENVIRONMENT }}" == "testing" ]; then
+          present="true"
+          echo "::set-output name=present::true"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "production" ]; then
+          present="true"
+          echo "::set-output name=present::true"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "development" ]; then
+          present="true"
+          echo "::set-output name=present::true"
+        else
+          present="false"
+          echo "::set-output name=present::false"
+        fi
+      shell: bash
+    - name: Set environment variables
+      id: environment_check
+      run: |
+        if [ "${{ inputs.ENVIRONMENT }}" == "testing" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
+           echo "::set-output name=KEY::${{ inputs.SSH-KEY-TEST }}"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "production" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
+           echo "::set-output name=KEY::${{ inputs.SSH-KEY-PROD }}"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "development" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
+           echo "::set-output name=KEY::${{ inputs.SSH-KEY-DEV }}"
+        fi
+        if [ "${{ github.ref }}" == "refs/heads/stage" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
+           echo "::set-output name=ENV_BRANCH::test"
+           echo "::set-output name=ENV_REGION::${{ inputs.REGION-TEST }}"
+           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-TEST }}"
+           echo "::set-output name=SG_ID::${{ inputs.SG-ID-TEST }}"
+           echo "::set-output name=KEY::${{ inputs.SSH-KEY-TEST }}"
+        elif [ "${{ github.ref }}" == "refs/heads/production" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
+           echo "::set-output name=ENV_BRANCH::prod"
+           echo "::set-output name=ENV_REGION::${{ inputs.REGION-PROD }}"
+           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-PROD }}"
+           echo "::set-output name=SG_ID::${{ inputs.SG-ID-PROD }}"
+           echo "::set-output name=KEY::${{ inputs.SSH-KEY-PROD }}"
+        elif [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
+           echo "::set-output name=ENV_BRANCH::dev"
+           echo "::set-output name=ENV_REGION::${{ inputs.REGION-DEV }}"
+           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-DEV }}"
+           echo "::set-output name=SG_ID::${{ inputs.SG-ID-DEV }}"
+           echo "::set-output name=KEY::${{ inputs.SSH-KEY-DEV }}"
+        fi
+      shell: bash
+

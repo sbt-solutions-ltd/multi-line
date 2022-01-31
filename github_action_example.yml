@@ -1,0 +1,57 @@
+# Name of the Workflow
+name: CD TEST
+
+on:
+  #Start workflow manually only from main/master, stage and production branches only.
+  workflow_dispatch:
+    branches:
+      - 'master'
+      - 'main'
+      - 'stage'
+      - 'production'
+    inputs:
+      environment:
+        description: 'The environment Terraform should build: development, testing or production'
+        type: choice
+        options:
+        - development
+        - testing
+        - production
+        required: false
+        default: 'development'
+
+
+jobs:
+  ssh_key_convert:
+    runs-on: ubuntu-latest
+    name: A job to pass environment variables based on branches and Terraform environment
+    steps:
+      - uses: actions/checkout@v2
+
+       # Calling the action
+      - id: envs
+        uses: zerodt-io/multi-line@v1
+        with:
+          # The inputs the action supports
+          ENVIRONMENT: ${{ github.event.inputs.environment }}
+          SSH-KEY-DEV: ssh-key-dev         # User input needed
+          SSH-KEY-TEST: ssh-key-test       # User input needed
+          SSH-KEY-PROD: ssh-key-prod       # User input needed
+          BASTION-IP-DEV: bsation-ip-dev   # User input needed
+          BASTION-IP-TEST: bsation-ip-test # User input needed
+          BASTION-IP-PROD: bsation-ip-prod # User input needed
+          SG-ID-DEV: sg-group-dev          # User input needed
+          SG-ID-TEST: sg-group-test        # User input needed
+          SG-ID-PROD: sg-group-prod        # User input needed
+          REGION-DEV: region-dev           # User input needed
+          REGION-TEST: region-test         # User input needed
+          REGION-PROD: region-prod         # User input needed
+
+       # The outputs the action produces
+      - run: |
+          echo "New key is ${{ steps.envs.outputs.SSH-KEY-SINGLE }}"
+          echo "New branch is ${{ steps.envs.outputs.ENV_BRANCH }}"
+          echo "New region is ${{ steps.envs.outputs.ENV_REGION }}"
+          echo "New IP is ${{ steps.envs.outputs.BASTION_IP }}"
+          echo "New SG ID is ${{ steps.envs.outputs.SG_ID }}"
+        shell: bash
