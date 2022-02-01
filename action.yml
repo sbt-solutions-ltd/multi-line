@@ -40,6 +40,60 @@ inputs:
   REGION-PROD:  # id of input
     description: 'The region for the production resources'
     required: false
+  SG-SCRIPT-URL-DEV:  # id of input
+    description: 'The URL of the dev casino SG'
+    required: false
+  SG-SCRIPT-URL-TEST:  # id of input
+    description: 'The URL of the testing casino SG'
+    required: false
+  SG-SCRIPT-URL-PROD:  # id of input
+    description: 'The URL of the production casino SG'
+    required: false
+  AWS-BUCKET-KYC-DEV:  # id of input
+    description: 'The S3 bucket KYC dev'
+    required: false
+  AWS-BUCKET-KYC-TEST:  # id of input
+    description: 'The S3 bucket KYC testing'
+    required: false
+  AWS-BUCKET-KYC-PROD:  # id of input
+    description: 'The S3 bucket KYC production'
+    required: false
+  S3-BUCKET-DEV:  # id of input
+    description: 'The S3 bucket Strapi dev'
+    required: false
+  S3-BUCKET-TEST:  # id of input
+    description: 'The S3 bucket Strapi testing'
+    required: false
+  S3-BUCKET-PROD:  # id of input
+    description: 'The S3 bucket Strapi production'
+    required: false
+  DB-ADDR-DEV:  # id of input
+    description: 'The DB dev address'
+    required: false
+  DB-ADDR-TEST:  # id of input
+    description: 'The DB testing address'
+    required: false
+  DB-ADDR-PROD:  # id of input
+    description: 'The DB production address'
+    required: false
+  SOFTSWISS-MP-REST-URL-DEV:  # id of input
+    description: 'The Softswiss dev address'
+    required: false
+  SOFTSWISS-MP-REST-URL-TEST:  # id of input
+    description: 'The Softswiss testing address'
+    required: false
+  SOFTSWISS-MP-REST-URL-PROD:  # id of input
+    description: 'The Softswiss production address'
+    required: false
+  KAFKA-BOOTSTRAP-SERVERS-DEV:  # id of input
+    description: 'The DB dev address'
+    required: false
+  KAFKA-BOOTSTRAP-SERVERS-TEST:  # id of input
+    description: 'The DB testing address'
+    required: false
+  KAFKA-BOOTSTRAP-SERVERS-PROD:  # id of input
+    description: 'The DB production address'
+    required: false
 outputs:
   SSH-KEY-SINGLE:
     description: "Single line SSH key"
@@ -56,6 +110,24 @@ outputs:
   SG_ID:
     description: "The ID of the Bastion host SSH security group"
     value: ${{ steps.environment_check.outputs.SG_ID }}
+  KAFKA-BOOTSTRAP-SERVERS:
+    description: "The DB production address"
+    value: ${{ steps.environment_check.outputs.KAFKA-BOOTSTRAP-SERVERS }}
+  SOFTSWISS-MP-REST-URL:
+    description: "The Softswiss address"
+    value: ${{ steps.environment_check.outputs.SOFTSWISS-MP-REST-URL }}
+  DB-ADDR:
+    description: "The DB address"
+    value: ${{ steps.environment_check.outputs.DB-ADDR }}
+  S3-BUCKET:
+    description: "The S3 bucket for Strapi"
+    value: ${{ steps.environment_check.outputs.S3-BUCKET }}
+  AWS-BUCKET-KYC:
+    description: "The S3 KYC bucket"
+    value: ${{ steps.environment_check.outputs.AWS-BUCKET-KYC }}
+  SG-SCRIPT-URL:
+    description: "The URL of the casino SG"
+    value: ${{ steps.environment_check.outputs.SG-SCRIPT-URL }}
 runs:
   using: "composite"
   steps:
@@ -100,6 +172,12 @@ runs:
            echo "::set-output name=ENV_REGION::${{ inputs.REGION-TEST }}"
            echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-TEST }}"
            echo "::set-output name=SG_ID::${{ inputs.SG-ID-TEST }}"
+           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-TEST }}"
+           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-TEST }}"
+           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-TEST }}"
+           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-TEST }}"
+           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-TEST }}"
+           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-TEST }}"
            multi_line="${{ inputs.SSH-KEY-TEST }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
@@ -109,6 +187,12 @@ runs:
            echo "::set-output name=ENV_REGION::${{ inputs.REGION-PROD }}"
            echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-PROD }}"
            echo "::set-output name=SG_ID::${{ inputs.SG-ID-PROD }}"
+           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-PROD }}"
+           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-PROD }}"
+           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-PROD }}"
+           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-PROD }}"
+           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-PROD }}"
+           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-PROD }}"
            multi_line="${{ inputs.SSH-KEY-PROD }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
@@ -118,6 +202,12 @@ runs:
            echo "::set-output name=ENV_REGION::${{ inputs.REGION-DEV }}"
            echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-DEV }}"
            echo "::set-output name=SG_ID::${{ inputs.SG-ID-DEV }}"
+           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-DEV }}"
+           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-DEV }}"
+           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-DEV }}"
+           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-DEV }}"
+           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-DEV }}"
+           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-DEV }}"
            multi_line="${{ inputs.SSH-KEY-DEV }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
