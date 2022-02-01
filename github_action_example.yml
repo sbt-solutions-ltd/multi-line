@@ -30,7 +30,7 @@ jobs:
 
        # Calling the action
       - id: envs
-        uses: zerodt-io/multi-line@v1
+        uses: zerodt-io/multi-line@v1.3
         with:
           # The inputs the action supports
           ENVIRONMENT: ${{ github.event.inputs.environment }}
