@@ -34,18 +34,36 @@ jobs:
         with:
           # The inputs the action supports
           ENVIRONMENT: ${{ github.event.inputs.environment }}
-          SSH-KEY-DEV: ssh-key-dev         # User input needed
-          SSH-KEY-TEST: ssh-key-test       # User input needed
-          SSH-KEY-PROD: ssh-key-prod       # User input needed
-          BASTION-IP-DEV: bsation-ip-dev   # User input needed
-          BASTION-IP-TEST: bsation-ip-test # User input needed
-          BASTION-IP-PROD: bsation-ip-prod # User input needed
-          SG-ID-DEV: sg-group-dev          # User input needed
-          SG-ID-TEST: sg-group-test        # User input needed
-          SG-ID-PROD: sg-group-prod        # User input needed
-          REGION-DEV: region-dev           # User input needed
-          REGION-TEST: region-test         # User input needed
-          REGION-PROD: region-prod         # User input needed
+          SSH-KEY-DEV: ssh-key-dev                  # User input needed
+          SSH-KEY-TEST: ssh-key-test                # User input needed
+          SSH-KEY-PROD: ssh-key-prod                # User input needed
+          BASTION-IP-DEV: bsation-ip-dev            # User input needed
+          BASTION-IP-TEST: bsation-ip-test          # User input needed
+          BASTION-IP-PROD: bsation-ip-prod          # User input needed
+          SG-ID-DEV: sg-group-dev                   # User input needed
+          SG-ID-TEST: sg-group-test                 # User input needed
+          SG-ID-PROD: sg-group-prod                 # User input needed
+          REGION-DEV: region-dev                    # User input needed
+          REGION-TEST: region-test                  # User input needed
+          REGION-PROD: region-prod                  # User input needed
+          SG-SCRIPT-URL-DEV: sg-dev                 # User input needed
+          SG-SCRIPT-URL-TEST: sg-test               # User input needed
+          SG-SCRIPT-URL-PROD: sg-prod               # User input needed
+          AWS-BUCKET-KYC-DEV: kyc-dev               # User input needed
+          AWS-BUCKET-KYC-TEST: kyc-test             # User input needed
+          AWS-BUCKET-KYC-PROD: kyc-prod             # User input needed
+          S3-BUCKET-DEV: strapi-dev                 # User input needed
+          S3-BUCKET-TEST: strapi-test               # User input needed
+          S3-BUCKET-PROD: strapi-prod               # User input needed
+          DB-ADDR-DEV: db-dev                       # User input needed
+          DB-ADDR-TEST: db-test                     # User input needed
+          DB-ADDR-PROD: db-prod                     # User input needed
+          SOFTSWISS-MP-REST-URL-DEV: soft-dev       # User input needed
+          SOFTSWISS-MP-REST-URL-TEST: soft-test     # User input needed
+          SOFTSWISS-MP-REST-URL-PROD: soft-prod     # User input needed
+          KAFKA-BOOTSTRAP-SERVERS-DEV : kafka-dev   # User input needed
+          KAFKA-BOOTSTRAP-SERVERS-TEST : kafka-test # User input needed
+          KAFKA-BOOTSTRAP-SERVERS-PROD : kafka-prod # User input needed
 
        # The outputs the action produces
       - run: |
@@ -54,4 +72,10 @@ jobs:
           echo "New region is ${{ steps.envs.outputs.ENV_REGION }}"
           echo "New IP is ${{ steps.envs.outputs.BASTION_IP }}"
           echo "New SG ID is ${{ steps.envs.outputs.SG_ID }}"
+          echo "New SG URL is ${{ steps.envs.outputs.SG-SCRIPT-URL }}"
+          echo "New AWS KYC is ${{ steps.envs.outputs.AWS-BUCKET-KYC }}"
+          echo "New S3 bucket is ${{ steps.envs.outputs.S3-BUCKET }}"
+          echo "New DB address is ${{ steps.envs.outputs.DB-ADDR }}"
+          echo "New Softswiss url is ${{ steps.envs.outputs.SOFTSWISS-MP-REST-URL }}"
+          echo "New Kafka url is ${{ steps.envs.outputs.KAFKA-BOOTSTRAP-SERVERS }}"
         shell: bash
