@@ -10,6 +10,7 @@ variables need to be provided:
 ```
           SSH-KEY-DEV:     SSH key for your EC2s in your development environment.
           SSH-KEY-TEST:    SSH key for your EC2s in your testing environment.
+          SSH-KEY-STAGE:   SSH key for your EC2s in your staging environment.
           SSH-KEY-PROD:    SSH key for your EC2s in your production environment.
 ```
 

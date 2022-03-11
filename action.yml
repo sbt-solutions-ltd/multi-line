@@ -10,6 +10,9 @@ inputs:
   SSH-KEY-TEST:  # id of input
     description: 'SSH Key to transform from multi to single line.'
     required: true
+  SSH-KEY-STAGE:  # id of input
+    description: 'SSH Key to transform from multi to single line.'
+    required: true
   SSH-KEY-PROD:  # id of input
     description: 'SSH Key to transform from multi to single line.'
     required: true
@@ -140,6 +143,9 @@ runs:
         elif [ "${{ inputs.ENVIRONMENT }}" == "production" ]; then
           present="true"
           echo "::set-output name=present::true"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "staging" ]; then
+          present="true"
+          echo "::set-output name=present::true"
         elif [ "${{ inputs.ENVIRONMENT }}" == "development" ]; then
           present="true"
           echo "::set-output name=present::true"
@@ -158,6 +164,11 @@ runs:
            echo "::set-output name=KEY::$multi_line"
         elif [ "${{ inputs.ENVIRONMENT }}" == "production" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
            multi_line="${{ inputs.SSH-KEY-PROD }}"
+           multi_line="${multi_line//$'\n'/'%0A'}"
+           multi_line="${multi_line//$'\r'/'%0D'}"
+           echo "::set-output name=KEY::$multi_line"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "staging" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
+           multi_line="${{ inputs.SSH-KEY-STAGE }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
            echo "::set-output name=KEY::$multi_line"
