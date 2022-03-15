@@ -37,7 +37,7 @@ jobs:
           SSH-KEY-STAGE: key-stage
           SSH-KEY-PROD: key-prod
           SG-ID-DEV: sg-dev
-          SG-ID-TEST: sg-test
+          SG-ID-TEST: ${{ secrets.SG_ID_TEST }}
           SG-ID-STAGE: sg-stage
           SG-ID-PROD: sg-prod
           BASTION-IP-DEV: bastion-ip-dev
@@ -57,3 +57,19 @@ jobs:
           echo "New IP is ${{ steps.envs.outputs.BASTION_IP }}"
           echo "New SG ID is ${{ steps.envs.outputs.SG_ID }}"
         shell: bash
+
+      #Login to AWS
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ steps.envs.outputs.ENV_REGION }}
+
+       #Update AWS SG to allow the GitHub runner to SSH to the bastion host
+      - name: Update AWS SG with runner IP
+        env:
+          SG_ID: ${{ steps.envs.outputs.SG_ID }}
+        run: |
+          IP=`curl ifconfig.me`
+          aws ec2 authorize-security-group-ingress --group-id $SG_ID --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges="[{CidrIp=$IP/32,Description=\"SSH access from Github runner.\"}]"
