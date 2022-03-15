@@ -30,7 +30,7 @@ jobs:
 
        # Calling the action
       - id: envs
-        uses: zerodt-io/multi-line@v1.3
+        uses: zerodt-io/multi-line@v1.5
         with:
           SSH-KEY-DEV: key-dev
           SSH-KEY-TEST: key-test
