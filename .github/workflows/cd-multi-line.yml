@@ -2,6 +2,9 @@
 name: CD TEST
 
 on:
+  push:
+    branches:
+      - 'testing'
   #Start workflow manually only from main/master, stage and production branches only.
   workflow_dispatch:
     branches:
