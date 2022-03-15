@@ -44,6 +44,9 @@ In addition, the action could process the following variables as well:
           KAFKA-BOOTSTRAP-SERVERS-DEV:   The DB dev address
           KAFKA-BOOTSTRAP-SERVERS-TEST:  The DB testing address
           KAFKA-BOOTSTRAP-SERVERS-PROD:  The DB production address
+          CUSTOMER-IO-TRACK-DEV:         The dev API url for customer IO
+          CUSTOMER-IO-TRACK-TEST:        The test API url for customer IO
+          CUSTOMER-IO-TRACK-PROD:        The prod API url for customer IO
 ```
 
 ## Output
@@ -62,6 +65,7 @@ As a result, the action will return the following outputs:
          S3-BUCKET:               "The S3 bucket for Strapi"
          AWS-BUCKET-KYC:          "The S3 KYC bucket"
          SG-SCRIPT-URL:           "The URL of the casino SG"
+         CUSTOMER-IO-TRACK:       "The API url for customer IO"
 ```
 
 ## Example

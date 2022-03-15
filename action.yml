@@ -22,6 +22,9 @@ inputs:
   BASTION-IP-TEST:  # id of input
     description: 'The IP of the TEST Bastion host'
     required: false
+  BASTION-IP-STAGE:  # id of input
+    description: 'The IP of the STAGE Bastion host'
+    required: false
   BASTION-IP-PROD:  # id of input
     description: 'The IP of the PROD Bastion host'
     required: false
@@ -31,6 +34,9 @@ inputs:
   SG-ID-TEST:  # id of input
     description: 'The ID of the TEST Bastion host SSH security group'
     required: false
+  SG-ID-STAGE:  # id of input
+    description: 'The ID of the STAGE Bastion host SSH security group'
+    required: false
   SG-ID-PROD:  # id of input
     description: 'The ID of the PROD Bastion host SSH security group'
     required: false
@@ -39,6 +45,9 @@ inputs:
     required: false
   REGION-TEST:  # id of input
     description: 'The region for the testing resources'
+    required: false
+  REGION-STAGE:  # id of input
+    description: 'The region for the staging resources'
     required: false
   REGION-PROD:  # id of input
     description: 'The region for the production resources'
@@ -58,6 +67,9 @@ inputs:
   AWS-BUCKET-KYC-TEST:  # id of input
     description: 'The S3 bucket KYC testing'
     required: false
+  AWS-BUCKET-KYC-STAGE:  # id of input
+    description: 'The S3 bucket KYC staging'
+    required: false
   AWS-BUCKET-KYC-PROD:  # id of input
     description: 'The S3 bucket KYC production'
     required: false
@@ -67,6 +79,9 @@ inputs:
   S3-BUCKET-TEST:  # id of input
     description: 'The S3 bucket Strapi testing'
     required: false
+  S3-BUCKET-STAGE:  # id of input
+    description: 'The S3 bucket Strapi staging'
+    required: false
   S3-BUCKET-PROD:  # id of input
     description: 'The S3 bucket Strapi production'
     required: false
@@ -75,6 +90,9 @@ inputs:
     required: false
   DB-ADDR-TEST:  # id of input
     description: 'The DB testing address'
+    required: false
+  DB-ADDR-STAGE:  # id of input
+    description: 'The DB staging address'
     required: false
   DB-ADDR-PROD:  # id of input
     description: 'The DB production address'
@@ -94,8 +112,20 @@ inputs:
   KAFKA-BOOTSTRAP-SERVERS-TEST:  # id of input
     description: 'The DB testing address'
     required: false
+  KAFKA-BOOTSTRAP-SERVERS-STAGE:  # id of input
+    description: 'The DB staging address'
+    required: false
   KAFKA-BOOTSTRAP-SERVERS-PROD:  # id of input
     description: 'The DB production address'
+    required: false
+  CUSTOMER-IO-TRACK-DEV:  # id of input
+    description: 'The dev API url for customer IO'
+    required: false
+  CUSTOMER-IO-RACK-TEST:  # id of input
+    description: 'The test API url for customer IO'
+    required: false
+  CUSTOMER-IO-TRACK-PROD:  # id of input
+    description: 'The prod API url for customer IO'
     required: false
 outputs:
   SSH-KEY-SINGLE:
@@ -131,6 +161,9 @@ outputs:
   SG-SCRIPT-URL:
     description: "The URL of the casino SG"
     value: ${{ steps.environment_check.outputs.SG-SCRIPT-URL }}
+  CUSTOMER-IO-TRACK:
+    description: "The API url for customer IO"
+    value: ${{ steps.environment_check.outputs.CUSTOMER_IO_TRACK }}
 runs:
   using: "composite"
   steps:
@@ -179,6 +212,22 @@ runs:
            echo "::set-output name=KEY::$multi_line"
         fi
         if [ "${{ github.ref }}" == "refs/heads/stage" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
+           echo "::set-output name=ENV_BRANCH::stage"
+           echo "::set-output name=ENV_REGION::${{ inputs.REGION-STAGE }}"
+           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-STAGE }}"
+           echo "::set-output name=SG_ID::${{ inputs.SG-ID-TEST }}"
+           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-TEST }}"
+           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-STAGE }}"
+           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-STAGE }}"
+           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-STAGE }}"
+           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-TEST }}"
+           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-STAGE }}"
+           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-RACK-TEST }}"
+           multi_line="${{ inputs.SSH-KEY-STAGE }}"
+           multi_line="${multi_line//$'\n'/'%0A'}"
+           multi_line="${multi_line//$'\r'/'%0D'}"
+           echo "::set-output name=KEY::$multi_line"
+        elif [ "${{ github.ref }}" == "refs/heads/testing" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
            echo "::set-output name=ENV_BRANCH::test"
            echo "::set-output name=ENV_REGION::${{ inputs.REGION-TEST }}"
            echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-TEST }}"
@@ -189,6 +238,7 @@ runs:
            echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-TEST }}"
            echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-TEST }}"
            echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-TEST }}"
+           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-RACK-TEST }}"
            multi_line="${{ inputs.SSH-KEY-TEST }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
@@ -204,6 +254,7 @@ runs:
            echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-PROD }}"
            echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-PROD }}"
            echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-PROD }}"
+           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-RACK-PROD }}"
            multi_line="${{ inputs.SSH-KEY-PROD }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
@@ -219,6 +270,7 @@ runs:
            echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-DEV }}"
            echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-DEV }}"
            echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-DEV }}"
+           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-RACK-DEV }}"
            multi_line="${{ inputs.SSH-KEY-DEV }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
