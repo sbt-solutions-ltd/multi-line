@@ -32,18 +32,18 @@ jobs:
       - id: envs
         uses: zerodt-io/multi-line@v1.3
         with:
-          SSH-KEY-DEV: ${{ secrets.KEY }}
-          SSH-KEY-TEST: ${{ secrets.KEY_TEST }}
-          SSH-KEY-STAGE: ${{ secrets.KEY_STAGE }}
-          SSH-KEY-PROD: ${{ secrets.KEY_PROD }}
-          SG-ID-DEV: ${{ secrets.SG_ID }}
-          SG-ID-TEST: ${{ secrets.SG_ID_TEST }}
-          SG-ID-STAGE: ${{ secrets.SG_ID_STAGE }}
-          SG-ID-PROD: ${{ secrets.SG_ID_PROD }}
-          BASTION-IP-DEV: ${{ secrets.BASTION_IP }}
-          BASTION-IP-TEST: ${{ secrets.BASTION_IP_TEST }}
-          BASTION-IP-STAGE: ${{ secrets.BASTION_IP_STAGE }}
-          BASTION-IP-PROD: ${{ secrets.BASTION_IP_PROD }}
+          SSH-KEY-DEV: key-dev
+          SSH-KEY-TEST: key-test
+          SSH-KEY-STAGE: key-stage
+          SSH-KEY-PROD: key-prod
+          SG-ID-DEV: sg-dev
+          SG-ID-TEST: sg-test
+          SG-ID-STAGE: sg-stage
+          SG-ID-PROD: sg-prod
+          BASTION-IP-DEV: bastion-ip-dev
+          BASTION-IP-TEST: bastion-ip-test
+          BASTION-IP-STAGE: bastion-ip-stage
+          BASTION-IP-PROD: bastion-ip-prod
           REGION-DEV: us-east-2
           REGION-TEST: us-east-2
           REGION-STAGE: us-east-1
