@@ -13,6 +13,9 @@ inputs:
   SSH-KEY-STAGE:  # id of input
     description: 'SSH Key to transform from multi to single line.'
     required: true
+  SSH-KEY-LICENS:  # id of input
+    description: 'SSH Key to transform from multi to single line.'
+    required: true
   SSH-KEY-PROD:  # id of input
     description: 'SSH Key to transform from multi to single line.'
     required: true
@@ -24,6 +27,9 @@ inputs:
     required: false
   BASTION-IP-STAGE:  # id of input
     description: 'The IP of the STAGE Bastion host'
+    required: false
+  BASTION-IP-LICENS:  # id of input
+    description: 'The IP of the LICENSING Bastion host'
     required: false
   BASTION-IP-PROD:  # id of input
     description: 'The IP of the PROD Bastion host'
@@ -37,6 +43,9 @@ inputs:
   SG-ID-STAGE:  # id of input
     description: 'The ID of the STAGE Bastion host SSH security group'
     required: false
+  SG-ID-LICENS:  # id of input
+    description: 'The ID of the LICENSING Bastion host SSH security group'
+    required: false
   SG-ID-PROD:  # id of input
     description: 'The ID of the PROD Bastion host SSH security group'
     required: false
@@ -49,6 +58,9 @@ inputs:
   REGION-STAGE:  # id of input
     description: 'The region for the staging resources'
     required: false
+  REGION-LICENS:  # id of input
+    description: 'The region for the licensing resources'
+    required: false
   REGION-PROD:  # id of input
     description: 'The region for the production resources'
     required: false
@@ -57,6 +69,9 @@ inputs:
     required: false
   SG-SCRIPT-URL-TEST:  # id of input
     description: 'The URL of the testing casino SG'
+    required: false
+  SG-SCRIPT-URL-LICENS:  # id of input
+    description: 'The URL of the licensing casino SG'
     required: false
   SG-SCRIPT-URL-PROD:  # id of input
     description: 'The URL of the production casino SG'
@@ -70,6 +85,9 @@ inputs:
   AWS-BUCKET-KYC-STAGE:  # id of input
     description: 'The S3 bucket KYC staging'
     required: false
+  AWS-BUCKET-KYC-LICENS:  # id of input
+    description: 'The S3 bucket KYC licensing'
+    required: false
   AWS-BUCKET-KYC-PROD:  # id of input
     description: 'The S3 bucket KYC production'
     required: false
@@ -81,6 +99,9 @@ inputs:
     required: false
   S3-BUCKET-STAGE:  # id of input
     description: 'The S3 bucket Strapi staging'
+    required: false
+  S3-BUCKET-LICENS:  # id of input
+    description: 'The S3 bucket Strapi licensing'
     required: false
   S3-BUCKET-PROD:  # id of input
     description: 'The S3 bucket Strapi production'
@@ -94,6 +115,9 @@ inputs:
   DB-ADDR-STAGE:  # id of input
     description: 'The DB staging address'
     required: false
+  DB-ADDR-LICENS:  # id of input
+    description: 'The DB licensing address'
+    required: false
   DB-ADDR-PROD:  # id of input
     description: 'The DB production address'
     required: false
@@ -102,6 +126,12 @@ inputs:
     required: false
   SOFTSWISS-MP-REST-URL-TEST:  # id of input
     description: 'The Softswiss testing address'
+    required: false
+  SOFTSWISS-MP-REST-URL-STAGE:  # id of input
+    description: 'The Softswiss staging address'
+    required: false
+  SOFTSWISS-MP-REST-URL-LICENS:  # id of input
+    description: 'The Softswiss licensing address'
     required: false
   SOFTSWISS-MP-REST-URL-PROD:  # id of input
     description: 'The Softswiss production address'
@@ -115,6 +145,9 @@ inputs:
   KAFKA-BOOTSTRAP-SERVERS-STAGE:  # id of input
     description: 'The DB staging address'
     required: false
+  KAFKA-BOOTSTRAP-SERVERS-LICENS:  # id of input
+    description: 'The DB licensing address'
+    required: false
   KAFKA-BOOTSTRAP-SERVERS-PROD:  # id of input
     description: 'The DB production address'
     required: false
@@ -123,6 +156,12 @@ inputs:
     required: false
   CUSTOMER-IO-RACK-TEST:  # id of input
     description: 'The test API url for customer IO'
+    required: false
+  CUSTOMER-IO-RACK-STAGE:  # id of input
+    description: 'The staging API url for customer IO'
+    required: false
+  CUSTOMER-IO-RACK-LICENS:  # id of input
+    description: 'The licensing API url for customer IO'
     required: false
   CUSTOMER-IO-TRACK-PROD:  # id of input
     description: 'The prod API url for customer IO'
@@ -179,6 +218,9 @@ runs:
         elif [ "${{ inputs.ENVIRONMENT }}" == "staging" ]; then
           present="true"
           echo "::set-output name=present::true"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "licensing" ]; then
+          present="true"
+          echo "::set-output name=present::true"
         elif [ "${{ inputs.ENVIRONMENT }}" == "development" ]; then
           present="true"
           echo "::set-output name=present::true"
@@ -202,6 +244,11 @@ runs:
            echo "::set-output name=KEY::$multi_line"
         elif [ "${{ inputs.ENVIRONMENT }}" == "staging" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
            multi_line="${{ inputs.SSH-KEY-STAGE }}"
+           multi_line="${multi_line//$'\n'/'%0A'}"
+           multi_line="${multi_line//$'\r'/'%0D'}"
+           echo "::set-output name=KEY::$multi_line"
+        elif [ "${{ inputs.ENVIRONMENT }}" == "licensing" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
+           multi_line="${{ inputs.SSH-KEY-LICENS }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
            echo "::set-output name=KEY::$multi_line"
@@ -240,6 +287,22 @@ runs:
            echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-TEST }}"
            echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-RACK-TEST }}"
            multi_line="${{ inputs.SSH-KEY-TEST }}"
+           multi_line="${multi_line//$'\n'/'%0A'}"
+           multi_line="${multi_line//$'\r'/'%0D'}"
+           echo "::set-output name=KEY::$multi_line"
+        elif [ "${{ github.ref }}" == "refs/heads/licensing" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
+           echo "::set-output name=ENV_BRANCH::licensing"
+           echo "::set-output name=ENV_REGION::${{ inputs.REGION-LICENS }}"
+           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-LICENS }}"
+           echo "::set-output name=SG_ID::${{ inputs.SG-ID-LICENS }}"
+           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-LICENS }}"
+           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-LICENS }}"
+           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-LICENS }}"
+           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-LICENS }}"
+           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-LICENS }}"
+           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-LICENS }}"
+           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-RACK-LICENS }}"
+           multi_line="${{ inputs.SSH-KEY-LICENS }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
            echo "::set-output name=KEY::$multi_line"

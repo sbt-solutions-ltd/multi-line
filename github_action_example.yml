@@ -8,6 +8,7 @@ on:
       - 'master'
       - 'main'
       - 'stage'
+      - 'licensing'
       - 'production'
     inputs:
       environment:
@@ -16,6 +17,8 @@ on:
         options:
         - development
         - testing
+        - staging
+        - licensing
         - production
         required: false
         default: 'development'
@@ -37,6 +40,7 @@ jobs:
           SSH-KEY-DEV: ssh-key-dev                  # User input needed
           SSH-KEY-TEST: ssh-key-test                # User input needed
           SSH-KEY-STAGE: ssh-key-test               # User input needed
+          SSH-KEY-LICENS: ssh-key-test              # User input needed
           SSH-KEY-PROD: ssh-key-prod                # User input needed
           BASTION-IP-DEV: bsation-ip-dev            # User input needed
           BASTION-IP-TEST: bsation-ip-test          # User input needed
