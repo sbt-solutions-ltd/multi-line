@@ -13,9 +13,6 @@ inputs:
   SSH-KEY-STAGE:  # id of input
     description: 'SSH Key to transform from multi to single line.'
     required: true
-  SSH-KEY-LICENS:  # id of input
-    description: 'SSH Key to transform from multi to single line.'
-    required: true
   SSH-KEY-PROD:  # id of input
     description: 'SSH Key to transform from multi to single line.'
     required: true
@@ -27,9 +24,6 @@ inputs:
     required: false
   BASTION-IP-STAGE:  # id of input
     description: 'The IP of the STAGE Bastion host'
-    required: false
-  BASTION-IP-LICENS:  # id of input
-    description: 'The IP of the LICENSING Bastion host'
     required: false
   BASTION-IP-PROD:  # id of input
     description: 'The IP of the PROD Bastion host'
@@ -43,9 +37,6 @@ inputs:
   SG-ID-STAGE:  # id of input
     description: 'The ID of the STAGE Bastion host SSH security group'
     required: false
-  SG-ID-LICENS:  # id of input
-    description: 'The ID of the LICENSING Bastion host SSH security group'
-    required: false
   SG-ID-PROD:  # id of input
     description: 'The ID of the PROD Bastion host SSH security group'
     required: false
@@ -58,9 +49,6 @@ inputs:
   REGION-STAGE:  # id of input
     description: 'The region for the staging resources'
     required: false
-  REGION-LICENS:  # id of input
-    description: 'The region for the licensing resources'
-    required: false
   REGION-PROD:  # id of input
     description: 'The region for the production resources'
     required: false
@@ -69,9 +57,6 @@ inputs:
     required: false
   SG-SCRIPT-URL-TEST:  # id of input
     description: 'The URL of the testing casino SG'
-    required: false
-  SG-SCRIPT-URL-LICENS:  # id of input
-    description: 'The URL of the licensing casino SG'
     required: false
   SG-SCRIPT-URL-PROD:  # id of input
     description: 'The URL of the production casino SG'
@@ -85,9 +70,6 @@ inputs:
   AWS-BUCKET-KYC-STAGE:  # id of input
     description: 'The S3 bucket KYC staging'
     required: false
-  AWS-BUCKET-KYC-LICENS:  # id of input
-    description: 'The S3 bucket KYC licensing'
-    required: false
   AWS-BUCKET-KYC-PROD:  # id of input
     description: 'The S3 bucket KYC production'
     required: false
@@ -99,9 +81,6 @@ inputs:
     required: false
   S3-BUCKET-STAGE:  # id of input
     description: 'The S3 bucket Strapi staging'
-    required: false
-  S3-BUCKET-LICENS:  # id of input
-    description: 'The S3 bucket Strapi licensing'
     required: false
   S3-BUCKET-PROD:  # id of input
     description: 'The S3 bucket Strapi production'
@@ -115,9 +94,6 @@ inputs:
   DB-ADDR-STAGE:  # id of input
     description: 'The DB staging address'
     required: false
-  DB-ADDR-LICENS:  # id of input
-    description: 'The DB licensing address'
-    required: false
   DB-ADDR-PROD:  # id of input
     description: 'The DB production address'
     required: false
@@ -129,9 +105,6 @@ inputs:
     required: false
   SOFTSWISS-MP-REST-URL-STAGE:  # id of input
     description: 'The Softswiss staging address'
-    required: false
-  SOFTSWISS-MP-REST-URL-LICENS:  # id of input
-    description: 'The Softswiss licensing address'
     required: false
   SOFTSWISS-MP-REST-URL-PROD:  # id of input
     description: 'The Softswiss production address'
@@ -145,9 +118,6 @@ inputs:
   KAFKA-BOOTSTRAP-SERVERS-STAGE:  # id of input
     description: 'The DB staging address'
     required: false
-  KAFKA-BOOTSTRAP-SERVERS-LICENS:  # id of input
-    description: 'The DB licensing address'
-    required: false
   KAFKA-BOOTSTRAP-SERVERS-PROD:  # id of input
     description: 'The DB production address'
     required: false
@@ -159,9 +129,6 @@ inputs:
     required: false
   CUSTOMER-IO-RACK-STAGE:  # id of input
     description: 'The staging API url for customer IO'
-    required: false
-  CUSTOMER-IO-RACK-LICENS:  # id of input
-    description: 'The licensing API url for customer IO'
     required: false
   CUSTOMER-IO-TRACK-PROD:  # id of input
     description: 'The prod API url for customer IO'
@@ -211,22 +178,19 @@ runs:
       run: |
         if [ "${{ inputs.ENVIRONMENT }}" == "testing" ]; then
           present="true"
-          echo "::set-output name=present::true"
+          echo "present=true" >> $GITHUB_OUTPUT
         elif [ "${{ inputs.ENVIRONMENT }}" == "production" ]; then
           present="true"
-          echo "::set-output name=present::true"
+          echo "present=true" >> $GITHUB_OUTPUT
         elif [ "${{ inputs.ENVIRONMENT }}" == "staging" ]; then
           present="true"
-          echo "::set-output name=present::true"
-        elif [ "${{ inputs.ENVIRONMENT }}" == "licensing" ]; then
-          present="true"
-          echo "::set-output name=present::true"
+          echo "present=true" >> $GITHUB_OUTPUT
         elif [ "${{ inputs.ENVIRONMENT }}" == "development" ]; then
           present="true"
-          echo "::set-output name=present::true"
+          echo "present=true" >> $GITHUB_OUTPUT
         else
           present="false"
-          echo "::set-output name=present::false"
+          echo "present=false" >> $GITHUB_OUTPUT
         fi
       shell: bash
     - name: Set environment variables
@@ -236,108 +200,87 @@ runs:
            multi_line="${{ inputs.SSH-KEY-TEST }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         elif [ "${{ inputs.ENVIRONMENT }}" == "production" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
            multi_line="${{ inputs.SSH-KEY-PROD }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         elif [ "${{ inputs.ENVIRONMENT }}" == "staging" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
            multi_line="${{ inputs.SSH-KEY-STAGE }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
-        elif [ "${{ inputs.ENVIRONMENT }}" == "licensing" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
-           multi_line="${{ inputs.SSH-KEY-LICENS }}"
-           multi_line="${multi_line//$'\n'/'%0A'}"
-           multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         elif [ "${{ inputs.ENVIRONMENT }}" == "development" ] && ([ "${{ github.ref }}" == refs/heads/master ] || [ "${{ github.ref }}" == refs/heads/main ]); then
            multi_line="${{ inputs.SSH-KEY-DEV }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         fi
         if [ "${{ github.ref }}" == "refs/heads/stage" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
-           echo "::set-output name=ENV_BRANCH::stage"
-           echo "::set-output name=ENV_REGION::${{ inputs.REGION-STAGE }}"
-           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-STAGE }}"
-           echo "::set-output name=SG_ID::${{ inputs.SG-ID-STAGE }}"
-           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-STAGE }}"
-           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-STAGE }}"
-           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-STAGE }}"
-           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-STAGE }}"
-           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-STAGE }}"
-           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-STAGE }}"
-           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-TRACK-STAGE }}"
+           echo "ENV_BRANCH=stage" >> $GITHUB_OUTPUT
+           echo "ENV_REGION=${{ inputs.REGION-STAGE }}" >> $GITHUB_OUTPUT
+           echo "BASTION_IP=${{ inputs.BASTION-IP-STAGE }}" >> $GITHUB_OUTPUT
+           echo "SG_ID=${{ inputs.SG-ID-STAGE }}" >> $GITHUB_OUTPUT
+           echo "SG-SCRIPT-URL=${{ inputs.SG-SCRIPT-URL-STAGE }}" >> $GITHUB_OUTPUT
+           echo "AWS-BUCKET-KYC=${{ inputs.AWS-BUCKET-KYC-STAGE }}" >> $GITHUB_OUTPUT
+           echo "S3-BUCKET=${{ inputs.S3-BUCKET-STAGE }}" >> $GITHUB_OUTPUT
+           echo "DB-ADDR=${{ inputs.DB-ADDR-STAGE }}" >> $GITHUB_OUTPUT
+           echo "SOFTSWISS-MP-REST-URL=${{ inputs.SOFTSWISS-MP-REST-URL-STAGE }}" >> $GITHUB_OUTPUT
+           echo "KAFKA-BOOTSTRAP-SERVERS=${{ inputs.KAFKA-BOOTSTRAP-SERVERS-STAGE }}" >> $GITHUB_OUTPUT
+           echo "CUSTOMER_IO_TRACK=${{ inputs.CUSTOMER-IO-TRACK-STAGE }}" >> $GITHUB_OUTPUT
            multi_line="${{ inputs.SSH-KEY-STAGE }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         elif [ "${{ github.ref }}" == "refs/heads/testing" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
-           echo "::set-output name=ENV_BRANCH::test"
-           echo "::set-output name=ENV_REGION::${{ inputs.REGION-TEST }}"
-           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-TEST }}"
-           echo "::set-output name=SG_ID::${{ inputs.SG-ID-TEST }}"
-           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-TEST }}"
-           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-TEST }}"
-           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-TEST }}"
-           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-TEST }}"
-           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-TEST }}"
-           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-TEST }}"
-           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-TRACK-TEST }}"
+           echo "ENV_BRANCH=test" >> $GITHUB_OUTPUT
+           echo "ENV_REGION=${{ inputs.REGION-TEST }}" >> $GITHUB_OUTPUT
+           echo "BASTION_IP=${{ inputs.BASTION-IP-TEST }}" >> $GITHUB_OUTPUT
+           echo "SG_ID=${{ inputs.SG-ID-TEST }}" >> $GITHUB_OUTPUT
+           echo "SG-SCRIPT-URL=${{ inputs.SG-SCRIPT-URL-TEST }}" >> $GITHUB_OUTPUT
+           echo "AWS-BUCKET-KYC=${{ inputs.AWS-BUCKET-KYC-TEST }}" >> $GITHUB_OUTPUT
+           echo "S3-BUCKET=${{ inputs.S3-BUCKET-TEST }}" >> $GITHUB_OUTPUT
+           echo "DB-ADDR=${{ inputs.DB-ADDR-TEST }}" >> $GITHUB_OUTPUT
+           echo "SOFTSWISS-MP-REST-URL=${{ inputs.SOFTSWISS-MP-REST-URL-TEST }}" >> $GITHUB_OUTPUT
+           echo "KAFKA-BOOTSTRAP-SERVERS=${{ inputs.KAFKA-BOOTSTRAP-SERVERS-TEST }}" >> $GITHUB_OUTPUT
+           echo "CUSTOMER_IO_TRACK=${{ inputs.CUSTOMER-IO-TRACK-TEST }}" >> $GITHUB_OUTPUT
            multi_line="${{ inputs.SSH-KEY-TEST }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
-        elif [ "${{ github.ref }}" == "refs/heads/licensing" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
-           echo "::set-output name=ENV_BRANCH::licensing"
-           echo "::set-output name=ENV_REGION::${{ inputs.REGION-LICENS }}"
-           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-LICENS }}"
-           echo "::set-output name=SG_ID::${{ inputs.SG-ID-LICENS }}"
-           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-LICENS }}"
-           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-LICENS }}"
-           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-LICENS }}"
-           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-LICENS }}"
-           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-LICENS }}"
-           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-LICENS }}"
-           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-TRACK-LICENS }}"
-           multi_line="${{ inputs.SSH-KEY-LICENS }}"
-           multi_line="${multi_line//$'\n'/'%0A'}"
-           multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         elif [ "${{ github.ref }}" == "refs/heads/production" ] && [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
-           echo "::set-output name=ENV_BRANCH::prod"
-           echo "::set-output name=ENV_REGION::${{ inputs.REGION-PROD }}"
-           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-PROD }}"
-           echo "::set-output name=SG_ID::${{ inputs.SG-ID-PROD }}"
-           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-PROD }}"
-           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-PROD }}"
-           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-PROD }}"
-           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-PROD }}"
-           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-PROD }}"
-           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-PROD }}"
-           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-TRACK-PROD }}"
+           echo "ENV_BRANCH=prod" >> $GITHUB_OUTPUT
+           echo "ENV_REGION=${{ inputs.REGION-PROD }}" >> $GITHUB_OUTPUT
+           echo "BASTION_IP=${{ inputs.BASTION-IP-PROD }}" >> $GITHUB_OUTPUT
+           echo "SG_ID=${{ inputs.SG-ID-PROD }}" >> $GITHUB_OUTPUT
+           echo "SG-SCRIPT-URL=${{ inputs.SG-SCRIPT-URL-PROD }}" >> $GITHUB_OUTPUT
+           echo "AWS-BUCKET-KYC=${{ inputs.AWS-BUCKET-KYC-PROD }}" >> $GITHUB_OUTPUT
+           echo "S3-BUCKET=${{ inputs.S3-BUCKET-PROD }}" >> $GITHUB_OUTPUT
+           echo "DB-ADDR=${{ inputs.DB-ADDR-PROD }}" >> $GITHUB_OUTPUT
+           echo "SOFTSWISS-MP-REST-URL=${{ inputs.SOFTSWISS-MP-REST-URL-PROD }}" >> $GITHUB_OUTPUT
+           echo "KAFKA-BOOTSTRAP-SERVERS=${{ inputs.KAFKA-BOOTSTRAP-SERVERS-PROD }}" >> $GITHUB_OUTPUT
+           echo "CUSTOMER_IO_TRACK=${{ inputs.CUSTOMER-IO-TRACK-PROD }}" >> $GITHUB_OUTPUT
            multi_line="${{ inputs.SSH-KEY-PROD }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         elif [ "${{ steps.env_check.outputs.present }}" == "false" ]; then
-           echo "::set-output name=ENV_BRANCH::dev"
-           echo "::set-output name=ENV_REGION::${{ inputs.REGION-DEV }}"
-           echo "::set-output name=BASTION_IP::${{ inputs.BASTION-IP-DEV }}"
-           echo "::set-output name=SG_ID::${{ inputs.SG-ID-DEV }}"
-           echo "::set-output name=SG-SCRIPT-URL::${{ inputs.SG-SCRIPT-URL-DEV }}"
-           echo "::set-output name=AWS-BUCKET-KYC::${{ inputs.AWS-BUCKET-KYC-DEV }}"
-           echo "::set-output name=S3-BUCKET::${{ inputs.S3-BUCKET-DEV }}"
-           echo "::set-output name=DB-ADDR::${{ inputs.DB-ADDR-DEV }}"
-           echo "::set-output name=SOFTSWISS-MP-REST-URL::${{ inputs.SOFTSWISS-MP-REST-URL-DEV }}"
-           echo "::set-output name=KAFKA-BOOTSTRAP-SERVERS::${{ inputs.KAFKA-BOOTSTRAP-SERVERS-DEV }}"
-           echo "::set-output name=CUSTOMER_IO_TRACK::${{ inputs.CUSTOMER-IO-TRACK-DEV }}"
+           echo "ENV_BRANCH=dev" >> $GITHUB_OUTPUT
+           echo "ENV_REGION=${{ inputs.REGION-DEV }}" >> $GITHUB_OUTPUT
+           echo "BASTION_IP=${{ inputs.BASTION-IP-DEV }}" >> $GITHUB_OUTPUT
+           echo "SG_ID=${{ inputs.SG-ID-DEV }}" >> $GITHUB_OUTPUT
+           echo "SG-SCRIPT-URL=${{ inputs.SG-SCRIPT-URL-DEV }}" >> $GITHUB_OUTPUT
+           echo "AWS-BUCKET-KYC=${{ inputs.AWS-BUCKET-KYC-DEV }}" >> $GITHUB_OUTPUT
+           echo "S3-BUCKET=${{ inputs.S3-BUCKET-DEV }}" >> $GITHUB_OUTPUT
+           echo "DB-ADDR=${{ inputs.DB-ADDR-DEV }}" >> $GITHUB_OUTPUT
+           echo "SOFTSWISS-MP-REST-URL=${{ inputs.SOFTSWISS-MP-REST-URL-DEV }}" >> $GITHUB_OUTPUT
+           echo "KAFKA-BOOTSTRAP-SERVERS=${{ inputs.KAFKA-BOOTSTRAP-SERVERS-DEV }}" >> $GITHUB_OUTPUT
+           echo "CUSTOMER_IO_TRACK=${{ inputs.CUSTOMER-IO-TRACK-DEV }}" >> $GITHUB_OUTPUT
            multi_line="${{ inputs.SSH-KEY-DEV }}"
            multi_line="${multi_line//$'\n'/'%0A'}"
            multi_line="${multi_line//$'\r'/'%0D'}"
-           echo "::set-output name=KEY::$multi_line"
+           echo "KEY=$multi_line" >> $GITHUB_OUTPUT
         fi
       shell: bash
 

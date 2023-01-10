@@ -11,7 +11,6 @@ variables need to be provided:
           SSH-KEY-DEV:     SSH key for your EC2s in your development environment.
           SSH-KEY-TEST:    SSH key for your EC2s in your testing environment.
           SSH-KEY-STAGE:   SSH key for your EC2s in your staging environment.
-          SSH-KEY-LICENS:   SSH key for your EC2s in your licensing environment.
           SSH-KEY-PROD:    SSH key for your EC2s in your production environment.
 ```
 
@@ -21,52 +20,42 @@ In addition, the action could process the following variables as well:
           BASTION-IP-DEV:                  IP of your AWS Bastion host in your development environment.
           BASTION-IP-TEST:                 IP of your AWS Bastion host in your testing environment.
           BASTION-IP-STAGE:                IP of your AWS Bastion host in your staging environment.
-          BASTION-IP-LICENS:               IP of your AWS Bastion host in your licensing environment.
           BASTION-IP-PROD:                 IP of your AWS Bastion host in your production environment.
           SG-ID-DEV:                       Security group ID of your Bastion SSH development sg group.
           SG-ID-TEST:                      Security group ID of your Bastion SSH testing sg group.
           SG-ID-STAGE:                     Security group ID of your Bastion SSH staging sg group.
-          SG-ID-LICENS:                    Security group ID of your Bastion SSH licensing sg group.
           SG-ID-PROD:                      Security group ID of your Bastion SSH production sg group.
           REGION-DEV:                      The region for the development resources.
           REGION-TEST:                     The region for the testing resources.
           REGION-STAGE:                    The region for the staging resources.
-          REGION-LICENS                    The region for the licensing resources.          
           REGION-PROD:                     The region for the production resources.
           SG-SCRIPT-URL-DEV:               The URL of the dev casino SG
           SG-SCRIPT-URL-TEST:              The URL of the testing casino SG
           SG-SCRIPT-URL-STAGE:             The URL of the staging casino SG
-          SG-SCRIPT-URL-LICENS:            The URL of the licensing casino SG
           SG-SCRIPT-URL-PROD:              The URL of the production casino SG
           AWS-BUCKET-KYC-DEV:              The S3 bucket KYC dev
           AWS-BUCKET-KYC-TEST:             The S3 bucket KYC testing
           AWS-BUCKET-KYC-STAGE:            The S3 bucket KYC staging
-          AWS-BUCKET-KYC-LICENS:           The S3 bucket KYC licensing
           AWS-BUCKET-KYC-PROD:             The S3 bucket KYC production
           S3-BUCKET-DEV:                   The S3 bucket Strapi dev
           S3-BUCKET-TEST:                  The S3 bucket Strapi testing
           S3-BUCKET-STAGE:                 The S3 bucket Strapi staging
-          S3-BUCKET-LICENS:                The S3 bucket Strapi licensing
           S3-BUCKET-PROD:                  The S3 bucket Strapi production
           DB-ADDR-DEV:                     The DB dev address
           DB-ADDR-TEST:                    The DB testing address
           DB-ADDR-STAGE:                   The DB staging address
-          DB-ADDR-LICENS:                  The DB licensing address
           DB-ADDR-PROD:                    The DB production address
           SOFTSWISS-MP-REST-URL-DEV:       The Softswiss dev address
           SOFTSWISS-MP-REST-URL-TEST:      The Softswiss testing address
           SOFTSWISS-MP-REST-URL-STAGE:     The Softswiss staging address
-          SOFTSWISS-MP-REST-URL-LICENS:    The Softswiss licensing address
           SOFTSWISS-MP-REST-URL-PROD:      The Softswiss production address
           KAFKA-BOOTSTRAP-SERVERS-DEV:     The DB dev address
           KAFKA-BOOTSTRAP-SERVERS-TEST:    The DB testing address
           KAFKA-BOOTSTRAP-SERVERS-STAGE:   The DB staging address
-          KAFKA-BOOTSTRAP-SERVERS-LICENS:  The DB licensing address
           KAFKA-BOOTSTRAP-SERVERS-PROD:    The DB production address
           CUSTOMER-IO-TRACK-DEV:           The dev API url for customer IO
           CUSTOMER-IO-TRACK-TEST:          The test API url for customer IO
           CUSTOMER-IO-TRACK-STAGE:         The staging API url for customer IO
-          CUSTOMER-IO-TRACK-LICENS:        The licensing API url for customer IO
           CUSTOMER-IO-TRACK-PROD:          The prod API url for customer IO
 ```
 
