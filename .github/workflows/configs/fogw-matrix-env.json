@@ -1,0 +1,20 @@
+{
+  "include": [
+    {
+      "country": "world",
+      "locale": "en"
+    },
+    {
+      "country": "france",
+      "locale": "fr"
+    },
+    {
+      "country": "canada",
+      "locale": "ca"
+    },
+    {
+      "country": "greece",
+      "locale": "gr"
+    }
+  ]
+}

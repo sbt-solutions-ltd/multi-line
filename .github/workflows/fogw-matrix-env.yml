@@ -1,0 +1,69 @@
+name: FOGW Environment based matrix
+
+concurrency:
+  group: fogw
+  cancel-in-progress: false
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  fetch-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix-vars.outputs.matrix }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@master
+
+      - name: "Fetch the matrix configuration"
+        id: matrix-vars
+        run: |
+          content=`cat .github/workflows/configs/fogw-matrix-env.json`
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/}"
+          content="${content//$'\r'/'%0D'}"
+          echo "matrix=$content" >> $GITHUB_OUTPUT
+
+  global:
+    name: Global outputs
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    outputs:
+      GITHUB_ENVIRONMENT: ${{ steps.branch.outputs.ENV_BRANCH }}
+    steps:
+      - name: Extract branch
+        id: branch
+        run: |
+          if [ "${GITHUB_REF#refs/heads/}" == "stage" ] || [ "${GITHUB_REF#refs/heads/}" == "testing" ] || [ "${GITHUB_REF#refs/heads/}" == "production" ] || [ "${GITHUB_REF#refs/heads/}" == "stage_grandz" ] || [ "${GITHUB_REF#refs/heads/}" == "production_grandz" ]; then
+            BRANCH=${GITHUB_REF#refs/heads/}
+          else
+            BRANCH=development
+          fi
+          echo "ENV_BRANCH=$BRANCH" >> $GITHUB_OUTPUT
+
+  build:
+    name: ${{ matrix.country }}
+    needs: [global, fetch-matrix]
+    continue-on-error: false
+    strategy:
+      max-parallel: 1
+      matrix: ${{ fromJson(needs.fetch-matrix.outputs.matrix) }}
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    environment: ${{ needs.global.outputs.BRANCH }}
+    steps:
+      - name: build step for ${{ needs.global.outputs.BRANCH }}
+        env:
+          VAR: ${{ vars.ENV }}
+          SECRET: ${{ secrets.SECRET }}
+        run: |
+          echo VAR: $VAR
+          echo SECRET: $SECRET
+          echo LOCALE: ${{ matrix.locale }}
+          echo COUNTRY: ${{ matrix.country }}
+            
