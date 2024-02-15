@@ -55,9 +55,9 @@ jobs:
       matrix: ${{ fromJson(needs.fetch-matrix.outputs.matrix) }}
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    environment: ${{ needs.global.outputs.BRANCH }}
+    environment: ${{ needs.global.outputs.GITHUB_ENVIRONMENT }}
     steps:
-      - name: build step for ${{ needs.global.outputs.BRANCH }}
+      - name: build step for ${{ needs.global.outputs.GITHUB_ENVIRONMENT }}
         env:
           VAR: ${{ vars.ENV }}
           SECRET: ${{ secrets.SECRET }}
